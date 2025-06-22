@@ -42,8 +42,8 @@ const Sidebar = ({ tables, activeTable, setActiveTable, isSidebarOpen, toggleSid
 
       <div
         className={`
-          fixed top-0 left-0 h-screen bg-gradient-to-b from-green-50 to-green-100 
-          border-r border-green-200 shadow-lg 
+          fixed top-0 left-0 h-screen bg-gradient-to-b from-blue-50 to-blue-100 
+          border-r border-blue-200 shadow-lg 
           transition-all duration-500 ease-in-out transform
           ${(isSidebarOpen || isHovered) ? 'w-96' : 'w-16'}
           z-30
@@ -54,21 +54,21 @@ const Sidebar = ({ tables, activeTable, setActiveTable, isSidebarOpen, toggleSid
         {/* Toggle Button */}
         <button
           onClick={toggleSidebar}
-          className="absolute -right-3 top-6 bg-green-100 hover:bg-green-200 
-                     border border-green-300 rounded-full p-1.5 shadow-md 
+          className="absolute -right-3 top-6 bg-blue-100 hover:bg-blue-200 
+                     border border-blue-300 rounded-full p-1.5 shadow-md 
                      transition-all duration-300 ease-in-out hover:scale-110 z-10
                      transform active:scale-95"
         >
           {(isSidebarOpen || isHovered) ? (
-            <ChevronLeft className="w-4 h-4 text-green-700" />
+            <ChevronLeft className="w-4 h-4 text-blue-700" />
           ) : (
-            <ChevronRight className="w-4 h-4 text-green-700" />
+            <ChevronRight className="w-4 h-4 text-blue-700" />
           )}
         </button>
 
         <div className="flex flex-col h-full">
           {/* Logo Section */}
-          <div className="p-4 flex justify-center items-center border-b border-green-200">
+          <div className="p-4 flex justify-center items-center border-b border-blue-200">
             <div className={`
               bg-white rounded-xl shadow-md p-2 
               transition-all duration-500 ease-in-out transform
@@ -93,10 +93,10 @@ const Sidebar = ({ tables, activeTable, setActiveTable, isSidebarOpen, toggleSid
               : 'max-h-0 opacity-0 -translate-y-4'
             }
           `}>
-            <h2 className="text-green-800 font-bold text-lg transition-all duration-300">
+            <h2 className="text-blue-800 font-bold text-lg transition-all duration-300">
               Data Dashboard
             </h2>
-            <p className="text-green-600 text-sm transition-all duration-300 delay-75">
+            <p className="text-blue-600 text-sm transition-all duration-300 delay-75">
               Table Management
             </p>
           </div>
@@ -120,8 +120,8 @@ const Sidebar = ({ tables, activeTable, setActiveTable, isSidebarOpen, toggleSid
                   transition-all duration-300 ease-in-out hover:scale-105
                   transform active:scale-95 cursor-pointer
                   ${activeTable === table.id 
-                    ? 'bg-green-200 text-green-800 shadow-md scale-105' 
-                    : 'text-green-700 hover:bg-green-100 hover:text-green-800'
+                    ? 'bg-blue-200 text-blue-800 shadow-md scale-105' 
+                    : 'text-blue-700 hover:bg-blue-100 hover:text-blue-800'
                   }
                 `}
               >
@@ -129,7 +129,7 @@ const Sidebar = ({ tables, activeTable, setActiveTable, isSidebarOpen, toggleSid
                 <div className={`
                   flex items-center justify-center 
                   transition-all duration-300 ease-in-out
-                  ${activeTable === table.id ? 'text-green-800' : 'text-green-600 group-hover:text-green-800'}
+                  ${activeTable === table.id ? 'text-blue-800' : 'text-blue-600 group-hover:text-blue-800'}
                 `}>
                   <table.icon className={`
                     w-5 h-5 transition-all duration-300 ease-in-out
@@ -154,12 +154,12 @@ const Sidebar = ({ tables, activeTable, setActiveTable, isSidebarOpen, toggleSid
                   absolute right-2 transition-all duration-300 ease-in-out
                   ${activeTable === table.id ? 'opacity-100 scale-100' : 'opacity-0 scale-0'}
                 `}>
-                  <div className="w-2 h-2 bg-green-600 rounded-full animate-pulse" />
+                  <div className="w-2 h-2 bg-blue-600 rounded-full animate-pulse" />
                 </div>
 
                 {/* Tooltip for collapsed state */}
                 <div className={`
-                  absolute left-16 px-3 py-2 bg-green-800 text-white text-sm 
+                  absolute left-16 px-3 py-2 bg-blue-800 text-white text-sm 
                   rounded-lg shadow-lg pointer-events-none whitespace-nowrap z-50
                   transition-all duration-300 ease-in-out transform
                   ${!(isSidebarOpen || isHovered) 
@@ -169,7 +169,7 @@ const Sidebar = ({ tables, activeTable, setActiveTable, isSidebarOpen, toggleSid
                 `}>
                   {table.title}
                   <div className="absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-1 
-                                  border-4 border-transparent border-r-green-800" />
+                                  border-4 border-transparent border-r-blue-800" />
                 </div>
               </div>
             ))}

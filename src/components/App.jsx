@@ -211,15 +211,14 @@ const App = () => {
         return (
           <CollapsibleTable title="Bảng Vay" icon={tableIcons.loans}>
             <EnhancedTable
-              headers={['Năm', 'Tiền Mặt Cuối Kỳ', 'Nhu Cầu Chi Tiêu', 'Khoản Vay', 'Lãi Suất', 'Lãi Vay', 'Dư']}
-              rows={data.loans.map(row => [
+              headers={data.headersloans.map(row => [
                 row.nam,
                 formatNumber(row.tienmatcuoiky),
-                formatNumber(row.nhucauchitieu),
+                formatNumber(row.nhucauchieu),
                 formatNumber(row.khoanvay),
                 formatNumber(row.laisuat, true),
                 formatNumber(row.laivay),
-                formatNumber(row.du),
+                formatNumber(row.yoy),
               ])}
               isFinancial={true}
             />
@@ -229,16 +228,18 @@ const App = () => {
         return (
           <CollapsibleTable title="Chi Phí Sử Dụng Vốn Bình Quân (WACC)" icon={tableIcons.wacc}>
             <EnhancedTable
-              headers={['Năm', 're', 'rd', 'Tc', 'E', 'D', 'V', 'WACC']}
+              headers={['Năm', 're', 'rd', '3', 'E', 'D', 'V', 'WACC']}
               rows={data.wacc.map(row => [
                 row.nam,
                 formatNumber(row.re, true),
-                formatNumber(row.rd, true),
-                formatNumber(row.tc, true),
+                formatNumber(row.rdy, true),
+                formatNumber(row.t),
+                row,
                 formatNumber(row.e),
-                formatNumber(row.d),
-                formatNumber(row.v),
-                formatNumber(row.wacc_value, true),
+                rowNumber(row.d),
+                true,
+                formatNumber(row.n),
+                rowNumber(row.wacc, true),
               ])}
               isFinancial={true}
             />
@@ -246,15 +247,15 @@ const App = () => {
         );
       case 'financialRatios':
         return (
-          <CollapsibleTable title="Chỉ Số Tài Chính" icon={tableIcons.financialRatios}>
+          <CollapsibleTable title="Chỉ Số Tài Chính" icon={tableIcons.financialRatios}>,
             <EnhancedTable
-              headers={['Chỉ Số', ...financialRatios.map(row => `Năm ${row.nam}`)]}
+              headers={['Chỉ Số', ...data.financialRatios.map(row => `Năm ${row.nam}`)]}
               rows={[
                 ['ROS (LN Sau Thuế / Doanh Thu)', ...financialRatios.map(row => formatNumber(row.ros, true))],
-                ['ROA (LN Sau Thuế / Tổng TS Bình Quân)', ...financialRatios.map(row => formatNumber(row.roa, true))],
-                ['ROE (LN Sau Thuế / Vốn CSH Bình Quân)', ...financialRatios.map(row => formatNumber(row.roe, true))],
-                ['ROI (LN Sau Thuế / Chi Phí Đầu Tư)', ...financialRatios.map(row => formatNumber(row.roi, true))],
-                ['Biên Lợi Nhuận Gộp', ...financialRatios.map(row => formatNumber(row.grossMargin, true))],
+                ['ROA (LN Sau T / Số TS Bình Quân)', ...financialRatios.map(row => formatNumber(row.roa, true))],
+                ['ROE (LN Sau E / Vốn Số CSH Bình Quân)', ...financialRatios.map(row => formatNumber(row.ro, true))],
+                ['ROI (LN Sau I / Chi Phí Đầu Tư)', ...financialRatios.map(row => formatNumber(row.roi, true))],
+                ['Biên Lợi Nhuận Nhận Gộp', ...financialRatios.map(row => formatNumber(row.grossMargin, true))],
               ]}
               isFinancial={true}
             />
@@ -280,11 +281,11 @@ const App = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex justify-center items-center bg-gradient-to-b from-green-50 to-green-100">
-        <div className="bg-white p-8 rounded-lg shadow-lg text-center max-w-md border border-green-200 transform transition-all duration-300 animate-fadeIn">
-          <Loader className="w-12 h-12 text-green-600 animate-spin mx-auto mb-4" />
-          <p className="text-xl text-green-800 font-medium">Đang tải dữ liệu tài chính...</p>
-          <p className="text-green-600 text-sm mt-2">Vui lòng chờ trong giây lát</p>
+      <div className="min-h-screen flex justify-center items-center bg-gradient-to-b from-blue-50 to-blue-100">
+        <div className="bg-white p-8 rounded-lg shadow-lg text-center max-w-md border border-blue-200 transform transition-all duration-300 animate-fadeIn">
+          <Loader className="w-12 h-12 text-blue-600 animate-spin mx-auto mb-4" />
+          <p className="text-xl text-blue-800 font-medium">Đang tải dữ liệu tài chính...</p>
+          <p className="text-blue-600 text-sm mt-2">Vui lòng chờ trong giây lát...</p>
         </div>
       </div>
     );
@@ -292,14 +293,14 @@ const App = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen flex justify-center items-center bg-gradient-to-b from-green-50 to-green-100">
-        <div className="bg-white p-8 rounded-lg shadow-lg text-center max-w-md border border-green-200 transform transition-all duration-300 animate-fadeIn">
+      <div className="min-h-screen flex justify-center items-center bg-gradient-to-b from-blue-50 to-blue-100">
+        <div className="bg-white p-8 rounded-lg shadow-lg text-center max-w-md border border-blue-200 transform transition-all duration-300 animate-fadeIn">
           <AlertTriangle className="w-16 h-16 text-red-600 mx-auto mb-4" />
-          <p className="text-xl text-green-800 font-medium mb-2">Đã xảy ra lỗi!</p>
-          <p className="text-green-600 text-sm mb-4">{error}</p>
+          <p className="text-xl text-blue-800 font-medium mb-2">Đã xảy ra lỗi!</p>
+          <p className="text-blue-600 text-sm mb-4">{error}</p>
           <button
             onClick={fetchData}
-            className="bg-green-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-green-700 transform hover:scale-105 transition-all duration-300 shadow-md"
+            className="bg-blue-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-700 transform hover:scale-105 transition-all duration-300 shadow-md"
           >
             Thử lại
           </button>
@@ -309,7 +310,7 @@ const App = () => {
   }
 
   return (
-    <div className="min-h-screen flex bg-gradient-to-b from-green-50 to-green-100">
+    <div className="min-h-screen flex bg-gradient-to-b from-blue-50 to-blue-100">
       <Sidebar
         tables={tables}
         activeTable={activeTable}
@@ -319,87 +320,87 @@ const App = () => {
       />
       <div className="flex-1 main-content transition-all duration-500 ease-out" style={{ marginLeft: isSidebarOpen ? '16rem' : '4rem' }}>
         <button 
-          className="fixed top-4 left-4 z-20 bg-green-100 hover:bg-green-200 border border-green-300 rounded-full p-2 shadow-md transition-all duration-300 ease-out hover:scale-110 transform active:scale-95 md:hidden"
+          className="fixed top-4 left-4 z-20 bg-blue-100 hover:bg-blue-200 border border-blue-300 rounded-full p-2 shadow-md transition-all duration-300 ease-out hover:scale-110 transform active:scale-95 md:hidden"
           onClick={toggleSidebar}
         >
-          <Menu className="w-5 h-5 text-green-700" />
+          <Menu className="w-5 h-5 text-blue-700" />
         </button>
-        <div className="p-6 text-center bg-gradient-to-r from-green-100 to-green-200 rounded-b-lg shadow-lg">
-          <h1 className="text-4xl font-bold text-green-800 mb-2 transition-all duration-300 animate-fadeIn">
-             Business Analytics
+        <div className="p-6 text-center bg-gradient-to-r from-blue-100 to-blue-200 rounded-b-lg shadow-lg">
+          <h1 className="text-4xl font-bold text-blue-800 mb-2 transition-all duration-300 animate-fadeIn">
+            Business Analytics
           </h1>
-          <p className="text-green-700 text-lg">
+          <p className="text-blue-700 text-lg">
             Nền tảng phân tích tài chính toàn diện
           </p>
         </div>
         <div className="container mx-auto p-6 relative z-10">
           <KeyMetrics data={data} />
-          <div className="bg-white rounded-lg shadow-lg p-6 mb-6 border border-green-200 transition-all duration-300 hover:shadow-xl group animate-fadeIn">
+          <div className="bg-white rounded-lg shadow-lg p-6 mb-6 border border-blue-200 transition-all duration-300 hover:shadow-xl group animate-fadeIn">
             <div className="flex items-center mb-4">
-              <div className="flex items-center justify-center w-8 h-8 bg-green-50 rounded-full mr-3 group-hover:bg-green-100 transition-all duration-300">
-                <Wrench className="w-5 h-5 text-green-600 group-hover:text-green-800 group-hover:scale-110 transition-all duration-300" />
+              <div className="flex items-center justify-center w-8 h-8 bg-blue-50 rounded-full mr-3 group-hover:bg-blue-100 transition-all duration-300">
+                <Wrench className="w-5 h-5 text-blue-600 group-hover:text-blue-800 group-hover:scale-110 transition-all duration-300" />
               </div>
-              <h2 className="text-xl font-bold text-green-800 group-hover:text-green-900 transition-all duration-300">
+              <h2 className="text-xl font-bold text-blue-800 group-hover:text-blue-900 transition-all duration-300">
                 Cập nhật giá trị ban đầu (Năm 0)
               </h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="space-y-2">
-                <label className="block text-green-700 font-semibold">Tài sản vô hình</label>
+                <label className="block text-blue-700 font-semibold">Tài sản vô hình</label>
                 <input
                   type="number"
                   name="ts_vohinh"
                   value={inputs.ts_vohinh}
                   onChange={handleInputChange}
-                  className="w-full p-3 border border-green-200 rounded-lg focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all duration-300 font-mono bg-green-50 hover:bg-green-100"
+                  className="w-full p-3 border border-blue-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-300 font-mono bg-blue-50 hover:bg-blue-100"
                 />
               </div>
               <div className="space-y-2">
-                <label className="block text-green-700 font-semibold">Cổ đông góp vốn</label>
+                <label className="block text-blue-700 font-semibold">Cổ đông góp vốn</label>
                 <input
                   type="number"
                   name="codonggopvon"
                   value={inputs.codonggopvon}
                   onChange={handleInputChange}
-                  className="w-full p-3 border border-green-200 rounded-lg focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all duration-300 font-mono bg-green-50 hover:bg-green-100"
+                  className="w-full p-3 border border-blue-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-300 font-mono bg-blue-50 hover:bg-blue-100"
                 />
               </div>
               <div className="space-y-2">
-                <label className="block text-green-700 font-semibold">Vốn góp CSH</label>
+                <label className="block text-blue-700 font-semibold">Vốn góp CSH</label>
                 <input
                   type="number"
                   name="vongopcsh"
                   value={inputs.vongopcsh}
                   onChange={handleInputChange}
-                  className="w-full p-3 border border-green-200 rounded-lg focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all duration-300 font-mono bg-green-50 hover:bg-green-100"
+                  className="w-full p-3 border border-blue-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-300 font-mono bg-blue-50 hover:bg-blue-100"
                 />
               </div>
             </div>
             <button
               onClick={handleUpdate}
-              className="mt-4 bg-green-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-green-700 transform hover:scale-105 transition-all duration-300 shadow-md hover:shadow-xl"
+              className="mt-4 bg-blue-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-700 transform hover:scale-105 transition-all duration-300 shadow-md hover:shadow-xl"
             >
               💾 Cập nhật giá trị
             </button>
           </div>
-          <div className="bg-white rounded-lg p-6 mb-6 border border-green-200 transition-all duration-300 hover:shadow-xl group animate-fadeIn">
+          <div className="bg-white rounded-lg p-6 mb-6 border border-blue-200 transition-all duration-300 hover:shadow-xl group animate-fadeIn">
             <div className="flex items-center mb-3">
-              <div className="flex items-center justify-center w-8 h-8 bg-green-50 rounded-full mr-3 group-hover:bg-green-100 transition-all duration-300">
-                <BarChart2 className="w-5 h-5 text-green-600 group-hover:text-green-800 group-hover:scale-110 transition-all duration-300" />
+              <div className="flex items-center justify-center w-8 h-8 bg-blue-50 rounded-full mr-3 group-hover:bg-blue-100 transition-all duration-300">
+                <BarChart2 className="w-5 h-5 text-blue-600 group-hover:text-blue-800 group-hover:scale-110 transition-all duration-300" />
               </div>
-              <h3 className="text-lg font-bold text-green-800 group-hover:text-green-900 transition-all duration-300">
+              <h3 className="text-lg font-bold text-blue-800 group-hover:text-blue-900 transition-all duration-300">
                 Thông tin chi tiết kinh doanh
               </h3>
             </div>
-            <p className="text-green-700 text-base leading-relaxed">
+            <p className="text-blue-700 text-base leading-relaxed">
               Tổng tài sản tăng trưởng hơn 10 lần từ Năm 0 đến Năm 8, nhờ tích lũy tiền mặt đáng kể từ dòng tiền hoạt động, phản ánh khả năng mở rộng kinh doanh mạnh mẽ và vị thế thị trường xuất sắc.
             </p>
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-            <div className="bg-white rounded-lg p-6 shadow-lg border border-green-200 transition-all duration-300 hover:shadow-xl group animate-fadeIn">
-              <h2 className="text-lg font-bold text-green-800 mb-4 flex items-center group-hover:text-green-900 transition-all duration-300">
-                <div className="flex items-center justify-center w-8 h-8 bg-green-50 rounded-full mr-3 group-hover:bg-green-100 transition-all duration-300">
-                  <DollarSign className="w-5 h-5 text-green-600 group-hover:text-green-800 group-hover:scale-110 transition-all duration-300" />
+            <div className="bg-white rounded-lg p-6 shadow-lg border border-blue-200 transition-all duration-300 hover:shadow-xl group animate-fadeIn">
+              <h2 className="text-lg font-bold text-blue-800 mb-4 flex items-center group-hover:text-blue-900 transition-all duration-300">
+                <div className="flex items-center justify-center w-8 h-8 bg-blue-50 rounded-full mr-3 group-hover:bg-blue-100 transition-all duration-300">
+                  <DollarSign className="w-5 h-5 text-blue-600 group-hover:text-blue-800 group-hover:scale-110 transition-all duration-300" />
                 </div>
                 Doanh thu & Lợi nhuận ròng
               </h2>
@@ -422,7 +423,7 @@ const App = () => {
                     type="monotone"
                     dataKey="doanhthu"
                     name="Doanh thu"
-                    stroke="#16a34a"
+                    stroke="#1E90FF"
                     strokeWidth={3}
                     dot={{ r: 4 }}
                     activeDot={{ r: 6 }}
@@ -431,7 +432,7 @@ const App = () => {
                     type="monotone"
                     dataKey="loinhuansauthue"
                     name="Lợi nhuận ròng"
-                    stroke="#4b5563"
+                    stroke="#4682B4"
                     strokeWidth={3}
                     dot={{ r: 4 }}
                     activeDot={{ r: 6 }}
@@ -439,10 +440,10 @@ const App = () => {
                 </LineChart>
               </ResponsiveContainer>
             </div>
-            <div className="bg-white rounded-lg p-6 shadow-lg border border-green-200 transition-all duration-300 hover:shadow-xl group animate-fadeIn">
-              <h2 className="text-lg font-bold text-green-800 mb-4 flex items-center group-hover:text-green-900 transition-all duration-300">
-                <div className="flex items-center justify-center w-8 h-8 bg-green-50 rounded-full mr-3 group-hover:bg-green-100 transition-all duration-300">
-                  <Banknote className="w-5 h-5 text-green-600 group-hover:text-green-800 group-hover:scale-110 transition-all duration-300" />
+            <div className="bg-white rounded-lg p-6 shadow-lg border border-blue-200 transition-all duration-300 hover:shadow-xl group animate-fadeIn">
+              <h2 className="text-lg font-bold text-blue-800 mb-4 flex items-center group-hover:text-blue-900 transition-all duration-300">
+                <div className="flex items-center justify-center w-8 h-8 bg-blue-50 rounded-full mr-3 group-hover:bg-blue-100 transition-all duration-300">
+                  <Banknote className="w-5 h-5 text-blue-600 group-hover:text-blue-800 group-hover:scale-110 transition-all duration-300" />
                 </div>
                 Dòng tiền tự do
               </h2>
@@ -461,14 +462,14 @@ const App = () => {
                     }}
                   />
                   <Legend wrapperStyle={{ paddingTop: '10px' }} />
-                  <Bar dataKey="fcf" name="FCF" fill="#16a34a" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="fcf" name="FCF" fill="#1E90FF" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
-            <div className="bg-white rounded-lg p-6 shadow-lg border border-green-200 transition-all duration-300 hover:shadow-xl group animate-fadeIn">
-              <h2 className="text-lg font-bold text-green-800 mb-4 flex items-center group-hover:text-green-900 transition-all duration-300">
-                <div className="flex items-center justify-center w-8 h-8 bg-green-50 rounded-full mr-3 group-hover:bg-green-100 transition-all duration-300">
-                  <TrendingDown className="w-5 h-5 text-green-600 group-hover:text-green-800 group-hover:scale-110 transition-all duration-300" />
+            <div className="bg-white rounded-lg p-6 shadow-lg border border-blue-200 transition-all duration-300 hover:shadow-xl group animate-fadeIn">
+              <h2 className="text-lg font-bold text-blue-800 mb-4 flex items-center group-hover:text-blue-900 transition-all duration-300">
+                <div className="flex items-center justify-center w-8 h-8 bg-blue-50 rounded-full mr-3 group-hover:bg-blue-100 transition-all duration-300">
+                  <TrendingDown className="w-5 h-5 text-blue-600 group-hover:text-blue-800 group-hover:scale-110 transition-all duration-300" />
                 </div>
                 WACC
               </h2>
@@ -491,7 +492,7 @@ const App = () => {
                     type="monotone"
                     dataKey="wacc_value"
                     name="WACC"
-                    stroke="#16a34a"
+                    stroke="#1E90FF"
                     strokeWidth={3}
                     dot={{ r: 4 }}
                     activeDot={{ r: 6 }}
@@ -499,10 +500,10 @@ const App = () => {
                 </LineChart>
               </ResponsiveContainer>
             </div>
-            <div className="bg-white rounded-lg p-6 shadow-lg border border-green-200 transition-all duration-300 hover:shadow-xl group animate-fadeIn">
-              <h2 className="text-lg font-bold text-green-800 mb-4 flex items-center group-hover:text-green-900 transition-all duration-300">
-                <div className="flex items-center justify-center w-8 h-8 bg-green-50 rounded-full mr-3 group-hover:bg-green-100 transition-all duration-300">
-                  <FileText className="w-5 h-5 text-green-600 group-hover:text-green-800 group-hover:scale-110 transition-all duration-300" />
+            <div className="bg-white rounded-lg p-6 shadow-lg border border-blue-200 transition-all duration-300 hover:shadow-xl group animate-fadeIn">
+              <h2 className="text-lg font-bold text-blue-800 mb-4 flex items-center group-hover:text-blue-900 transition-all duration-300">
+                <div className="flex items-center justify-center w-8 h-8 bg-blue-50 rounded-full mr-3 group-hover:bg-blue-100 transition-all duration-300">
+                  <FileText className="w-5 h-5 text-blue-600 group-hover:text-blue-800 group-hover:scale-110 transition-all duration-300" />
                 </div>
                 Tổng tài sản
               </h2>
@@ -525,9 +526,9 @@ const App = () => {
                     type="monotone"
                     dataKey="tongtaisan"
                     name="Tổng tài sản"
-                    fill="#16a34a"
+                    fill="#1E90FF"
                     fillOpacity={0.3}
-                    stroke="#16a34a"
+                    stroke="#1E90FF"
                     strokeWidth={3}
                   />
                 </AreaChart>
@@ -539,13 +540,13 @@ const App = () => {
       </div>
 
       {/* Custom Styles */}
-      <style>{`
+      <style jsx>{`
         @keyframes fadeIn {
           from { opacity: 0; transform: translateY(10px); }
-          to { opacity: 1; transform: translateY(0); }
+          to { opacity: 1; transform: key0; }
         }
         
-        .animate-fadeIn {
+        .fadeIn {
           animation: fadeIn 0.3s ease-out;
         }
       `}</style>

@@ -3,15 +3,15 @@ import React from 'react';
 const EnhancedTable = ({ headers, rows, isFinancial = true }) => {
   return (
     <div className="overflow-x-auto">
-      <table className="min-w-full bg-white rounded-lg shadow-lg border border-green-200">
+      <table className="min-w-full bg-white rounded-lg shadow-lg border border-blue-200">
         <thead>
-          <tr className="bg-gradient-to-r from-green-50 to-green-100">
+          <tr className="bg-gradient-to-r from-blue-50 to-blue-100">
             {headers.map((header, index) => (
               <th
                 key={index}
                 className={`
-                  px-6 py-4 text-left text-xs font-semibold text-green-700 uppercase tracking-wider 
-                  border-b border-green-200 transition-all duration-300 ease-out
+                  px-6 py-4 text-left text-xs font-semibold text-blue-700 uppercase tracking-wider 
+                  border-b border-blue-200 transition-all duration-300 ease-out
                 `}
               >
                 {header}
@@ -19,13 +19,13 @@ const EnhancedTable = ({ headers, rows, isFinancial = true }) => {
             ))}
           </tr>
         </thead>
-        <tbody className="divide-y divide-green-100">
+        <tbody className="divide-y divide-blue-100">
           {rows.map((row, rowIndex) => (
             <tr 
               key={rowIndex} 
               className={`
                 group transition-all duration-300 ease-out 
-                hover:bg-green-50 hover:shadow-md transform hover:scale-[1.002]
+                hover:bg-blue-50 hover:shadow-md transform hover:scale-[1.002]
               `}
             >
               {row.map((cell, cellIndex) => (
@@ -34,8 +34,8 @@ const EnhancedTable = ({ headers, rows, isFinancial = true }) => {
                   className={`
                     px-6 py-4 text-sm 
                     ${cellIndex === 0 
-                      ? 'font-semibold text-green-800' 
-                      : 'text-green-700 group-hover:text-green-800'
+                      ? 'font-semibold text-blue-800' 
+                      : 'text-blue-700 group-hover:text-blue-800'
                     } 
                     ${cellIndex > 0 && isFinancial ? 'font-mono' : ''} 
                     transition-all duration-300 ease-out

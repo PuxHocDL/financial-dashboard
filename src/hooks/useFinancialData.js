@@ -243,7 +243,7 @@ const useFinancialData = () => {
         loinhuansauthue: row.loinhuansauthue || 0,
         yoy_soluong: prev.soluong ? ((row.soluong - prev.soluong) / prev.soluong) : 0,
         yoy_giaban: prev.giaban ? ((row.giaban - prev.giaban) / prev.giaban) : 0,
-        yoy_doanhthu: prev.doanhthu ? ((row.doanhthu - prev.doanhthu) / prev.doanhthu) : 0,
+        yoy_doanhthu: prev.doanhthu ? ((row.doanhthu - prev.doanhthu) / Math.abs(prev.doanhthu)) : 0,
         yoy_nvl: prev.nvl ? ((row.nvl - prev.nvl) / prev.nvl) : 0,
         yoy_chiphikhauhao: prev.chiphikhauhao ? ((row.chiphikhauhao - prev.chiphikhauhao) / prev.chiphikhauhao) : 0,
         yoy_chiphiluong: prev.chiphiluong ? ((row.chiphiluong - prev.chiphiluong) / prev.chiphiluong) : 0,
@@ -252,7 +252,7 @@ const useFinancialData = () => {
         yoy_chiphilaivay: prev.chiphilaivay ? ((row.chiphilaivay - prev.chiphilaivay) / prev.chiphilaivay) : 0,
         yoy_loinhuantruocthue_ebt: prev.loinhuantruocthue_ebt || row.loinhuantruocthue_ebt === 0 ? ((row.loinhuantruocthue_ebt - prev.loinhuantruocthue_ebt) / prev.loinhuantruocthue_ebt) || 0 : 0,
         yoy_thuetndn: prev.thuetndn || row.thuetndn === 0 ? ((row.thuetndn - prev.thuetndn) / prev.thuetndn) || 0 : 0,
-        yoy_loinhuansauthue: prev.loinhuansauthue || row.loinhuansauthue === 0 ? ((row.loinhuansauthue - prev.loinhuansauthue) / prev.loinhuansauthue) || 0 : 0,
+        yoy_loinhuansauthue: prev.loinhuansauthue || row.loinhuansauthue === 0 ? ((row.loinhuansauthue - prev.loinhuansauthue) / Math.abs(prev.loinhuansauthue)) || 0 : 0,
       };
     });
   };

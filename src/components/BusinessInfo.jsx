@@ -13,7 +13,7 @@ const BusinessInfo = () => {
         </h3>
       </div>
       <p className="text-cyan-700 text-base leading-relaxed">
-        Tổng tài sản tăng trưởng hơn 10 lần từ Năm 0 đến Năm 8, nhờ tích lũy tiền mặt đáng kể từ dòng tiền hoạt động, phản ánh khả năng mở rộng kinh doanh mạnh mẽ và vị thế thị trường xuất sắc.
+        Tổng tài sản tăng trưởng nhiều lần từ Năm 0 đến Năm 8, nhờ tích lũy tiền mặt đáng kể từ dòng tiền hoạt động, phản ánh khả năng mở rộng kinh doanh mạnh mẽ và vị thế thị trường xuất sắc.
       </p>
     </div>
   );

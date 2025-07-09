@@ -1,6 +1,6 @@
 import React from 'react';
 
-const EnhancedTable = ({ headers, rows, isFinancial = true }) => {
+const EnhancedTable = ({ headers, rows, isFinancial = true, highlightRows = [] }) => {
   return (
     <div className="overflow-x-auto">
       <table className="min-w-full bg-white rounded-lg shadow-lg border border-blue-200">
@@ -21,11 +21,12 @@ const EnhancedTable = ({ headers, rows, isFinancial = true }) => {
         </thead>
         <tbody className="divide-y divide-blue-100">
           {rows.map((row, rowIndex) => (
-            <tr 
-              key={rowIndex} 
+            <tr
+              key={rowIndex}
               className={`
                 group transition-all duration-300 ease-out 
                 hover:bg-blue-50 hover:shadow-md transform hover:scale-[1.002]
+                ${highlightRows.includes(row[0]) ? 'bg-cyan-100 font-bold' : ''}
               `}
             >
               {row.map((cell, cellIndex) => (
@@ -34,7 +35,9 @@ const EnhancedTable = ({ headers, rows, isFinancial = true }) => {
                   className={`
                     px-6 py-4 text-sm 
                     ${cellIndex === 0 
-                      ? 'font-semibold text-blue-800' 
+                      ? highlightRows.includes(row[0]) 
+                        ? 'font-bold text-cyan-800' 
+                        : 'font-semibold text-blue-800'
                       : 'text-blue-700 group-hover:text-blue-800'
                     } 
                     ${cellIndex > 0 && isFinancial ? 'font-mono' : ''} 

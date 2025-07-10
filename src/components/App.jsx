@@ -6,9 +6,10 @@ import InputForm from './InputForm';
 import BusinessInfo from './BusinessInfo';
 import Charts from './Charts';
 import Tables from './Tables';
+import RandomBreakevenAnalysis from './RandomBreakevenAnalysis';
+import Breakeven3DChart from './Breakeven3DChart';
 import Loading from './Loading';
 import Error from './Error';
-import KeyMetrics from './KeyMetrics'
 import {
   FileText,
   Columns,
@@ -20,12 +21,11 @@ import {
   Waves,
   Construction,
   Banknote,
-  Landmark,
   TrendingDown,
   PieChart,
   Building2,
-  Menu
-} from "lucide-react";
+  Menu,
+} from 'lucide-react';
 
 const App = () => {
   const {
@@ -41,7 +41,7 @@ const App = () => {
     calculateFinancialRatios,
     calculateDCFAnalysis,
     calculateIncomeStatementVerticalAnalysis,
-    calculateIncomeStatementHorizontalAnalysis, 
+    calculateIncomeStatementHorizontalAnalysis,
   } = useFinancialData();
 
   const [activeTable, setActiveTable] = useState('balanceSheet');
@@ -75,8 +75,11 @@ const App = () => {
         isSidebarOpen={isSidebarOpen}
         toggleSidebar={toggleSidebar}
       />
-      <div className="flex-1 main-content transition-all duration-500 ease-out" style={{ marginLeft: isSidebarOpen ? '16rem' : '4rem' }}>
-        <button 
+      <div
+        className="flex-1 main-content transition-all duration-500 ease-out"
+        style={{ marginLeft: isSidebarOpen ? '16rem' : '4rem' }}
+      >
+        <button
           className="fixed top-4 left-4 z-20 bg-cyan-100 hover:bg-cyan-200 border border-cyan-300 rounded-full p-2 shadow-md transition-all duration-300 ease-out hover:scale-110 transform active:scale-95 md:hidden"
           onClick={toggleSidebar}
         >
@@ -93,6 +96,8 @@ const App = () => {
               <InputForm inputs={inputs} handleInputChange={handleInputChange} handleUpdate={handleUpdate} />
               <BusinessInfo />
               <Charts data={data} />
+              <RandomBreakevenAnalysis data={data} fetchData={fetchData} />
+              <Breakeven3DChart />
               <Tables
                 data={data}
                 calculateBalanceSheetAnalysis={calculateBalanceSheetAnalysis}
@@ -108,7 +113,6 @@ const App = () => {
         </div>
       </div>
 
-      {/* Custom Styles */}
       <style>{`
         @keyframes fadeIn {
           from { opacity: 0; transform: translateY(10px); }

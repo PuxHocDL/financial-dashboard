@@ -257,43 +257,62 @@ const useFinancialData = () => {
     });
   };
   const calculateIncomeStatementVerticalAnalysis = () => {
-    const breakevenRevenue = data.incomeStatement.map(row => {
-      const fixedCosts = (row.chiphikhauhao || 0) + (row.chiphiluong || 0);
-      const variableCostRatio = row.doanhthu ? (row.nvl || 0) / row.doanhthu : 0.25; // Giả sử NVL = 25% doanh thu nếu không có
-      return row.doanhthu ? fixedCosts / (1 - variableCostRatio) : 0;
-    });
-    const averageBreakevenTime = breakevenRevenue.reduce((sum, val) => sum + val, 0) / breakevenRevenue.length || 0;
+  // Calculate breakeven revenue (unchanged, as it's correct)
+  const breakevenRevenue = data.incomeStatement.map(row => {
+    const fixedCosts = (row.chiphikhauhao || 0) + (row.chiphiluong || 0) + (row.chiphilaivay || 0); // Include interest expense
+    const variableCostRatio = row.doanhthu ? (row.nvl || 0) / row.doanhthu : 0.25;
+    return row.doanhthu ? fixedCosts / (1 - variableCostRatio) : 0;
+  });
 
-    return data.incomeStatement.map((row, index) => {
-      const bs = data.balanceSheet.find(bs => bs.nam === row.nam);
-      const prevBs = data.balanceSheet.find(bs => bs.nam === row.nam - 1);
-      const cf = data.cashFlow.find(cf => cf.nam === row.nam);
-      const avgAssets = prevBs && bs ? (bs.tongtaisan + prevBs.tongtaisan) / 2 : bs?.tongtaisan || 0;
-      const avgEquity = prevBs && bs ? (bs.voncsh + prevBs.voncsh) / 2 : bs?.voncsh || 0;
-      const totalInvestment = (row.nvl || 0) + (row.chiphiluong || 0) + (cf?.net_cfi || 0);
+  // Calculate breakeven time using free cash flow or net profit
+  const initialInvestment = inputs.codonggopvon + inputs.vongopcsh; // Default to 3676.67 if inputs are zero
+  let cumulativeCashFlow = 0;
+  let breakevenTime = 0;
 
-      return {
-        nam: row.nam,
-        doanhthu: row.doanhthu ? 1 : 0,
-        nvl: row.doanhthu ? (row.nvl / row.doanhthu) : 0,
-        chiphikhauhao: row.doanhthu ? (row.chiphikhauhao / row.doanhthu) : 0,
-        chiphiluong: row.doanhthu ? (row.chiphiluong / row.doanhthu) : 0,
-        tongchiphi_giavon: row.doanhthu ? (row.tongchiphi_giavon / row.doanhthu) : 0,
-        loinhuangop_ebit: row.doanhthu ? (row.loinhuangop_ebit / row.doanhthu) : 0,
-        chiphilaivay: row.doanhthu ? (row.chiphilaivay / row.doanhthu) : 0,
-        loinhuantruocthue_ebt: row.doanhthu ? (row.loinhuantruocthue_ebt / row.doanhthu) : 0,
-        thuetndn: row.doanhthu ? (row.thuetndn / row.doanhthu) : 0,
-        loinhuansauthue: row.doanhthu ? (row.loinhuansauthue / row.doanhthu) : 0,
-        ros: row.doanhthu ? (row.loinhuansauthue / row.doanhthu) : 0,
-        roa: avgAssets ? (row.loinhuansauthue / avgAssets) : 0,
-        roe: avgEquity ? (row.loinhuansauthue / avgEquity) : 0,
-        roi: totalInvestment ? (row.loinhuansauthue / totalInvestment) : 0,
-        grossMargin: row.doanhthu ? (row.loinhuangop_ebit / row.doanhthu) : 0,
-        breakevenRevenue: breakevenRevenue[index] || 0,
-        breakevenTime: averageBreakevenTime,
-      };
-    });
-  };
+  for (let i = 0; i < data.cashFlow.length; i++) {
+    const cashFlowRow = data.cashFlow[i];
+    const incomeRow = data.incomeStatement.find(row => row.nam === cashFlowRow.nam);
+    const cashFlow = cashFlowRow?.fcf || incomeRow?.loinhuansauthue || 0; // Prefer fcf, fallback to net profit
+    cumulativeCashFlow += cashFlow;
+
+    if (cumulativeCashFlow >= initialInvestment) {
+      const previousCumulative = i > 0 ? cumulativeCashFlow - cashFlow : 0;
+      const remaining = initialInvestment - previousCumulative;
+      breakevenTime = cashFlow ? (i + (remaining / cashFlow)) : 0;
+      break;
+    }
+  }
+
+  return data.incomeStatement.map((row, index) => {
+    const bs = data.balanceSheet.find(bs => bs.nam === row.nam);
+    const prevBs = data.balanceSheet.find(bs => bs.nam === row.nam - 1);
+    const cf = data.cashFlow.find(cf => cf.nam === row.nam);
+    const avgAssets = prevBs && bs ? (bs.tongtaisan + prevBs.tongtaisan) / 2 : bs?.tongtaisan || 0;
+    const avgEquity = prevBs && bs ? (bs.voncsh + prevBs.voncsh) / 2 : bs?.voncsh || 0;
+    const totalInvestment = (row.nvl || 0) + (row.chiphiluong || 0) + (cf?.net_cfi || 0);
+
+    return {
+      nam: row.nam,
+      doanhthu: row.doanhthu ? 1 : 0,
+      nvl: row.doanhthu ? (row.nvl / row.doanhthu) : 0,
+      chiphikhauhao: row.doanhthu ? (row.chiphikhauhao / row.doanhthu) : 0,
+      chiphiluong: row.doanhthu ? (row.chiphiluong / row.doanhthu) : 0,
+      tongchiphi_giavon: row.doanhthu ? (row.tongchiphi_giavon / row.doanhthu) : 0,
+      loinhuangop_ebit: row.doanhthu ? (row.loinhuangop_ebit / row.doanhthu) : 0,
+      chiphilaivay: row.doanhthu ? (row.chiphilaivay / row.doanhthu) : 0,
+      loinhuantruocthue_ebt: row.doanhthu ? (row.loinhuantruocthue_ebt / row.doanhthu) : 0,
+      thuetndn: row.doanhthu ? (row.thuetndn / row.doanhthu) : 0,
+      loinhuansauthue: row.doanhthu ? (row.loinhuansauthue / row.doanhthu) : 0,
+      ros: row.doanhthu ? (row.loinhuansauthue / row.doanhthu) : 0,
+      roa: avgAssets ? (row.loinhuansauthue / avgAssets) : 0,
+      roe: avgEquity ? (row.loinhuansauthue / avgEquity) : 0,
+      roi: totalInvestment ? (row.loinhuansauthue / totalInvestment) : 0,
+      grossMargin: row.doanhthu ? (row.loinhuangop_ebit / row.doanhthu) : 0,
+      breakevenRevenue: breakevenRevenue[index] || 0,
+      breakevenTime: breakevenTime || 0, // Single breakeven time value
+    };
+  });
+};
   const calculateDCFAnalysis = () => {
     return data.cashFlow.map((row, index) => {
       const bs = data.balanceSheet.find(bs => bs.nam === row.nam);

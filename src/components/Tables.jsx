@@ -403,22 +403,6 @@ const Tables = ({ data, calculateBalanceSheetAnalysis, calculateIncomeStatementY
             />
           </CollapsibleTable>
         );
-      case 'financialRatios':
-        return (
-          <CollapsibleTable title="Chỉ Số Tài Chính" icon={tableIcons.financialRatios}>
-            <EnhancedTable
-              headers={['Chỉ Số', ...financialRatios.map(row => `Năm ${row.nam}`)]}
-              rows={[
-                ['ROS (LN Sau Thuế / Doanh Thu)', ...financialRatios.map(row => formatNumber(row.ros, true))],
-                ['ROA (LN Sau Thuế / Tổng TS Bình Quân)', ...financialRatios.map(row => formatNumber(row.roa, true))],
-                ['ROE (LN Sau Thuế / Vốn CSH Bình Quân)', ...financialRatios.map(row => formatNumber(row.roe, true))],
-                ['ROI (LN Sau Thuế / Chi Phí Đầu Tư)', ...financialRatios.map(row => formatNumber(row.roi, true))],
-                ['Biên Lợi Nhuận Gộp', ...financialRatios.map(row => formatNumber(row.grossMargin, true))],
-              ]}
-              isFinancial={true}
-            />
-          </CollapsibleTable>
-        );
       case 'storeCount':
         return (
           <CollapsibleTable title="Số Cửa Hàng" icon={tableIcons.storeCount}>

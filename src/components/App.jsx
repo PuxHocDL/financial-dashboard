@@ -58,7 +58,6 @@ const App = () => {
     { id: 'depreciation', title: 'Bảng Khấu Hao', icon: Construction },
     { id: 'loans', title: 'Bảng Vay', icon: Banknote },
     { id: 'wacc', title: 'WACC', icon: TrendingDown },
-    { id: 'financialRatios', title: 'Chỉ Số Tài Chính', icon: PieChart },
     { id: 'storeCount', title: 'Số Cửa Hàng', icon: Building2 },
   ];
 
